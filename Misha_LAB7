@@ -1,0 +1,29 @@
+from math import isqrt
+
+def solve_discrete_log(base, result, mod):
+    limit = isqrt(mod) + 1
+    baby_steps = {}
+    val = 1
+
+    # Створюємо таблицю baby-steps
+    for step in range(limit):
+        baby_steps[val] = step
+        val = (val * base) % mod
+
+    # Готуємо множник для giant-steps
+    multiplier = pow(base, mod - limit - 1, mod)
+    val = result
+
+    # Шукаємо розв'язок
+    for giant_step in range(limit):
+        if val in baby_steps:
+            return giant_step * limit + baby_steps[val]
+        val = (val * multiplier) % mod
+
+    return -1  # Повертаємо -1, якщо розв'язку немає
+
+# Введення даних
+base, result, mod = map(int, input().split())
+
+# Виведення результату
+print(solve_discrete_log(base, result, mod))
